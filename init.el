@@ -40,7 +40,20 @@
 (when (eq system-type 'darwin)
   (set-frame-font "Menlo 16")
   )
-;;(set-frame-font "WenQuanYi Micro Hei Mono 18")
+
+(when (eq system-type 'windows-nt)
+  (set-frame-font "YaHei Monaco Hybird 14")
+  (tool-bar-mode -1)
+  ;; tramp configure for windows-nt
+  (require 'tramp)
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (add-to-list 'tramp-connection-properties
+	       (list (regexp-quote "/ssh:")
+		     "login-args"
+		     '(("-tt") ("-l" "%u") ("-p" "%p") ("%c")
+		       ("-e" "none") ("%h"))))
+  )
+
 
 ;;custom function
 (defun volatile-kill-buffer ()
@@ -119,7 +132,8 @@
   )
 
 (use-package all-the-icons
-  :if (display-graphic-p))
+  :if (display-graphic-p)
+  )
 
 (use-package restart-emacs
   )
