@@ -13,7 +13,8 @@
 (setq use-package-always-ensure t)
 (setq package-check-signature nil)
 
-(xterm-mouse-mode)
+;;(xterm-mouse-mode)
+(context-menu-mode)
 (show-paren-mode t)
 ;;(auto-save-mode nil)
 (scroll-bar-mode nil)
@@ -26,13 +27,13 @@
 
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'python-mode-hook 'eglot-ensure)
+;;(add-hook 'python-mode-hook 'eglot-ensure)
 
 
-(when window-system
-  (set-frame-position (selected-frame) 0 0)
-  (set-frame-size (selected-frame) 128 51)
-  )
+;;(when window-system
+;;  (set-frame-position (selected-frame) 0 0)
+;;  (set-frame-size (selected-frame) 200 60)
+;;  )
 
 (when (eq system-type 'gnu/linux)
   (set-frame-font "Source Code Pro 18")
@@ -40,19 +41,14 @@
 (when (eq system-type 'darwin)
   (set-frame-font "Menlo 16")
   )
+;;(set-frame-font "WenQuanYi Micro Hei Mono 18")
 
 (when (eq system-type 'windows-nt)
   (set-frame-font "YaHei Monaco Hybird 14")
   (tool-bar-mode -1)
-  ;; tramp configure for windows-nt
-  (require 'tramp)
-  (setq tramp-use-ssh-controlmaster-options nil)
-  (add-to-list 'tramp-connection-properties
-	       (list (regexp-quote "/ssh:")
-		     "login-args"
-		     '(("-tt") ("-l" "%u") ("-p" "%p") ("%c")
-		       ("-e" "none") ("%h"))))
   )
+
+;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 
 ;;custom function
@@ -132,8 +128,7 @@
   )
 
 (use-package all-the-icons
-  :if (display-graphic-p)
-  )
+  :if (display-graphic-p))
 
 (use-package restart-emacs
   )
@@ -151,6 +146,7 @@
   (unless (display-graphic-p)
     (corfu-terminal-mode +1))
   )
+
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -165,7 +161,6 @@
   )
 
 (use-package magit
-  :ensure t
   )
 
 (use-package diff-hl
@@ -176,17 +171,6 @@
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
   )
 
-(use-package posframe
-  :ensure t
-  )
-
-;;(use-package rime
-;;  :custom
-;;  (rime-librime-root "~/.emacs.d/librime")
-;;  (default-input-method "rime")
-;;  (rime-show-candidate 'posframe)
-;;  )
-
 (use-package modus-themes
   :ensure t
   :config
@@ -195,26 +179,49 @@
   (load-theme 'modus-operandi-tritanopia t)
   )
 
+(use-package tramp
+  :config
+  (setq tramp-verbose 3)
+  (setq enable-remote-dir-locals t)
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (when (eq system-type 'windows-nt)
+    (add-to-list 'tramp-connection-properties
+	       (list (regexp-quote "/ssh:")
+		     "login-args"
+		     '(("-tt") ("-l" "%u") ("-p" "%p") ("%c")
+		       ("-e" "none") ("%h"))))
+    )
+  )
+
 (use-package emacs
   :custom
-  ;;(ConTeXt-Mark-version "IV")
   (auto-save-default nil)
   (make-backup-files nil)
   :bind
-  ("C-x k" . volatile-kill-buffer)
-  ("C-s" . consult-line)
-  ("C-x b" . consult-buffer)
+  (
+   ("C-x k" . volatile-kill-buffer)
+   ("C-s" . consult-line)
+   ("C-x b" . consult-buffer)
   )
+  )
+
+;;(use-package geiser-guile
+;; :ensure t)
+
+;;(use-package rime
+;;  :custom
+;;  (default-input-method "rime")
+;;  )
+
+(setq ConTeXt-Mark-version "IV")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("a0997c8cd72b848c675e66531265b68845cfdb222b32762ac8773c1dc957d10a" default))
  '(package-selected-packages
-   '(modus-themes pyvenv eglot corfu consult evil vertico marginalia sr-speedbar all-the-icons smartparens restart-emacs use-package)))
+   '(modus-themes org-modern auctex magit devdocs geiser-guile pyvenv eglot corfu consult evil vertico marginalia sr-speedbar smartparens restart-emacs use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
