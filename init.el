@@ -13,9 +13,8 @@
 (setq use-package-always-ensure t)
 (setq package-check-signature nil)
 
-;;(xterm-mouse-mode)
+(xterm-mouse-mode)
 (context-menu-mode)
-(show-paren-mode t)
 ;;(auto-save-mode nil)
 (scroll-bar-mode nil)
 (global-hl-line-mode nil)
@@ -25,30 +24,29 @@
 
 (setq tab-width 4)
 
-
+;; from emacs-29 , linum-mode is deprecated
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-;;(add-hook 'python-mode-hook 'eglot-ensure)
+(add-hook 'prog-mode-hook 'hs-minor-mode)
+(add-hook 'prog-mode-hook 'breadcrumb-mode)
+(add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+(add-hook 'python-mode-hook 'eglot-ensure)
+;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 
-;;(when window-system
-;;  (set-frame-position (selected-frame) 0 0)
-;;  (set-frame-size (selected-frame) 200 60)
-;;  )
+(when window-system
+  (set-frame-position (selected-frame) 0 0)
+  (set-frame-size (selected-frame) 200 60)
+  )
 
+;; select fonts for different os
 (when (eq system-type 'gnu/linux)
-  (set-frame-font "Source Code Pro 18")
+  ;;(set-frame-font "Source Code Pro 18")
+  (set-frame-font "YaHei Monaco Hybird 20")
   )
 (when (eq system-type 'darwin)
   (set-frame-font "Menlo 16")
   )
 ;;(set-frame-font "WenQuanYi Micro Hei Mono 18")
-
-(when (eq system-type 'windows-nt)
-  (set-frame-font "YaHei Monaco Hybird 14")
-  (tool-bar-mode -1)
-  )
-
-;;(add-to-list 'tramp-remote-path 'tramp-own-remote-path)
 
 
 ;;custom function
@@ -116,11 +114,11 @@
   (smartparens-global-mode)
   )
 
-;;(use-package projectile
-;;  :ensure t
-;;  :config
-;;  (setq projectile-completion-system 'corfu)
-;;  )
+(use-package projectile
+  :ensure t
+  :config
+  (setq projectile-completion-system 'corfu)
+  )
 
 (use-package savehist
   :init
@@ -146,7 +144,6 @@
   (unless (display-graphic-p)
     (corfu-terminal-mode +1))
   )
-
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
@@ -161,67 +158,59 @@
   )
 
 (use-package magit
+  :ensure t
   )
 
 (use-package diff-hl
   :ensure t
-  :hook (after-init . global-diff-hl-mode)
-  :config
-  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  )
+)  
 
-(use-package modus-themes
+(use-package doom-modeline
   :ensure t
-  :config
-  (setq modus-themes-italic-constructs t
-	modus-themes-bold-constructs nil)
-  (load-theme 'modus-operandi-tritanopia t)
-  )
+  :init (doom-modeline-mode 1))
 
-(use-package tramp
-  :config
-  (setq tramp-verbose 3)
-  (setq enable-remote-dir-locals t)
-  (setq tramp-use-ssh-controlmaster-options nil)
-  (when (eq system-type 'windows-nt)
-    (add-to-list 'tramp-connection-properties
-	       (list (regexp-quote "/ssh:")
-		     "login-args"
-		     '(("-tt") ("-l" "%u") ("-p" "%p") ("%c")
-		       ("-e" "none") ("%h"))))
-    )
+(use-package geiser-guile
+  :ensure t)
+
+(use-package posframe
+  :ensure t
   )
 
 (use-package emacs
   :custom
+  (ConTeXt-Mark-version "IV")
   (auto-save-default nil)
   (make-backup-files nil)
+  (recentf-mode t)
+  (column-number-mode t)
+  (show-paren-mode t)
+  (show-trailing-whitespace t)
   :bind
-  (
    ("C-x k" . volatile-kill-buffer)
    ("C-s" . consult-line)
    ("C-x b" . consult-buffer)
+   ("M-g i" . consult-imenu)
+  :config
+  (setq modus-themes-italic-constructs t
+	 modus-themes-bold-constructs nil)
+   (load-theme 'modus-operandi-tritanopia t)
   )
-  )
-
-;;(use-package geiser-guile
-;; :ensure t)
-
-;;(use-package rime
-;;  :custom
-;;  (default-input-method "rime")
-;;  )
-
-(setq ConTeXt-Mark-version "IV")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(TeX-view-program-selection
+   '(((output-dvi has-no-display-manager)
+      "dvi2tty")
+     ((output-dvi style-pstricks)
+      "dvips and gv")
+     (output-dvi "xdvi")
+     (output-pdf "Zathura")
+     (output-html "xdg-open")))
  '(package-selected-packages
-   '(modus-themes org-modern auctex magit devdocs geiser-guile pyvenv eglot corfu consult evil vertico marginalia sr-speedbar smartparens restart-emacs use-package)))
+   '(doom-modeline highlight-indent-guides treemacs breadcrumb modus-themes org-modern auctex geiser-guile pyvenv eglot corfu projectile consult evil vertico marginalia sr-speedbar all-the-icons smartparens restart-emacs use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
